@@ -2,6 +2,7 @@ package com.example.ssperandeo.countinggame.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ public class NumberGridFragment extends Fragment{
     public int mMaxNumbers = 20;
     public int mCurrentNumber = 1;
     public int mNumberOfColumns = 5;
+    public int mSolvedTimes = 0;
+    public List<Number> mNumbers;
 
     private RecyclerView mCountingAppRecyclerView;
     private NumberAdapter mAdapter;
@@ -36,6 +39,7 @@ public class NumberGridFragment extends Fragment{
 
         mCountingAppRecyclerView.setLayoutManager( new GridLayoutManager(getActivity(), mNumberOfColumns) );
 
+        createNumbers();
         updateUI();
 
         return view;
@@ -43,17 +47,47 @@ public class NumberGridFragment extends Fragment{
     }
 
 
-    private void updateUI(){
+    private void createNumbers(){
 
-        List<Number> numbers = new ArrayList<Number>();
+        mNumbers = new ArrayList<Number>();
 
-        for( int x = mCurrentNumber; x <= mMaxNumbers; x++ ){
-            numbers.add( new Number(x) );
+        boolean solved;
+
+        for( int x = 1; x <= mMaxNumbers; x++ ){
+
+            if( x < mCurrentNumber ){
+                solved = true;
+            }else{
+                solved = false;
+            }
+            mNumbers.add( new Number(x, solved) );
+
         }
 
-        Collections.shuffle( numbers );
+    }
 
-        mAdapter = new NumberAdapter( numbers );
+
+    private void updateUI(){
+
+        for( Number numberObject : mNumbers ){
+
+            if( numberObject.mNumber < mCurrentNumber ){
+                numberObject.mSolved = true;
+            }else{
+                numberObject.mSolved = false;
+            }
+
+        }
+
+        if( mSolvedTimes > 0 && mCurrentNumber == 1 ){
+            Collections.shuffle( mNumbers );
+        }
+
+        if( mSolvedTimes > 1 ){
+            Collections.shuffle( mNumbers );
+        }
+
+        mAdapter = new NumberAdapter( mNumbers );
         mCountingAppRecyclerView.setAdapter( mAdapter );
 
     }
@@ -72,7 +106,8 @@ public class NumberGridFragment extends Fragment{
             super(view);
             mMainView = view;
             mNumberTextView = (TextView) mMainView.findViewById( R.id.textView );
-            view.setOnClickListener(this);
+            mMainView.setOnClickListener(this);
+
         }
 
         @Override
@@ -85,6 +120,7 @@ public class NumberGridFragment extends Fragment{
                 mCurrentNumber++;
                 if( mCurrentNumber == mMaxNumbers + 1 ){
                     mCurrentNumber = 1;
+                    mSolvedTimes++;
                     Toast.makeText( getActivity(), "Yay! You did it!", Toast.LENGTH_LONG ).show();
                 }
                 updateUI();
@@ -124,6 +160,14 @@ public class NumberGridFragment extends Fragment{
 
             holder.mNumber = mNumbers.get(position);
             holder.mNumberTextView.setText( Integer.toString(holder.mNumber.mNumber) );
+
+            if( holder.mNumber.mSolved ){
+                int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+                if( currentApiVersion > 15 ){
+                    holder.mMainView.setBackground( ResourcesCompat.getDrawable(getResources(), R.drawable.back_solved, null) );
+                }
+                holder.mMainView.setAlpha((float) 0.50);
+            }
 
         }
 

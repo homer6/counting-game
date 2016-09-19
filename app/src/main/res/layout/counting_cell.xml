@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="10dp"
+    android:background="@drawable/back"
 >
 
     <TextView
@@ -18,7 +19,6 @@
         android:layout_weight="1"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:background="@drawable/back"
         android:gravity="center_vertical|center_horizontal"
     />
 
