@@ -121,6 +121,12 @@ public class NumberGridFragment extends Fragment{
                 if( mCurrentNumber == mMaxNumbers + 1 ){
                     mCurrentNumber = 1;
                     mSolvedTimes++;
+
+                    if( mSolvedTimes > 2 ){
+                        mMaxNumbers += 10;
+                        createNumbers();
+                    }
+
                     Toast.makeText( getActivity(), "Yay! You did it!", Toast.LENGTH_LONG ).show();
                 }
                 updateUI();
