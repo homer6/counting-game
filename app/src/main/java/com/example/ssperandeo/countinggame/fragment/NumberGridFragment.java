@@ -21,7 +21,7 @@ import java.util.List;
 
 public class NumberGridFragment extends Fragment{
 
-    public int mMaxNumbers = 20;
+    public int mMaxNumbers = 26;
     public int mCurrentNumber = 1;
     public int mNumberOfColumns = 5;
     public int mSolvedTimes = 0;
@@ -122,11 +122,6 @@ public class NumberGridFragment extends Fragment{
                     mCurrentNumber = 1;
                     mSolvedTimes++;
 
-                    if( mSolvedTimes > 2 ){
-                        mMaxNumbers += 10;
-                        createNumbers();
-                    }
-
                     Toast.makeText( getActivity(), "Yay! You did it!", Toast.LENGTH_LONG ).show();
                 }
                 updateUI();
@@ -165,7 +160,8 @@ public class NumberGridFragment extends Fragment{
         public void onBindViewHolder( NumberHolder holder, int position ){
 
             holder.mNumber = mNumbers.get(position);
-            holder.mNumberTextView.setText( Integer.toString(holder.mNumber.mNumber) );
+            holder.mNumberTextView.setText( Character.toString( (char)(holder.mNumber.mNumber + 64) ) );
+            //holder.mNumberTextView.setText( Integer.toString( holder.mNumber.mNumber ) );
 
             if( holder.mNumber.mSolved ){
                 int currentApiVersion = android.os.Build.VERSION.SDK_INT;
